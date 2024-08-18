@@ -1,0 +1,6 @@
+org.phosphantic.auto.specs.CatFoodStore:
+  - should only serve customers if not empty
+  - should only serve cats
+
+org.phosphantic.auto.specs.Cat:
+  - should get food from CatFoodStore
