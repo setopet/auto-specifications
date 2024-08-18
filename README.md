@@ -12,11 +12,11 @@ TBD
 ### Define specifications
 Place a `specifications.yaml` in the `src/main/resources` folder of your project:
 ```yaml
-Cat:
+org.phosphantic.example.Cat:
   - should attract attention when hungry
   - should make a beautiful noise when satisfied
 
-PetSupplyStore:
+org.phosphantic.exampel.PetSupplyStore:
   - should sell appropriate food
   - should throw PetSupplyStoreEmptyException when empty
 ```
@@ -41,5 +41,5 @@ public interface PetSupplyStoreSpec {
 Those interfaces can then be implemented by a test class to ensure coverage:
 
 ```java
-public PetSupplyStoreTest implements PetSupplyStoreSpec {
+public class PetSupplyStoreTest implements PetSupplyStoreSpec {
 ```
