@@ -7,13 +7,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.google.common.collect.ImmutableList;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.phosphantic.auto.specs.model.ClassSpecification;
 import org.phosphantic.auto.specs.model.SpecificationItem;
+import org.phosphantic.auto.specs.model.UnitSpecification;
+import org.phosphantic.auto.specs.parser.SpecificationParser;
 
 public class SpecificationItemParserTest {
 
@@ -26,18 +26,18 @@ public class SpecificationItemParserTest {
   @Test
   public void shouldParseSpecificationsFromYaml() {
     final SpecificationParser specificationParser = new SpecificationParser(new YAMLMapper());
-    final List<ClassSpecification> classSpecifications =
+    final List<UnitSpecification> unitSpecifications =
         Arrays.asList(
-            new ClassSpecification(
+            new UnitSpecification(
                 "org.phosphantic.auto.specs.CatFoodStore",
                 Arrays.asList(
                     new SpecificationItem("should only serve customers if not empty"),
                     new SpecificationItem("should only serve cats"))),
-            new ClassSpecification(
+            new UnitSpecification(
                 "org.phosphantic.auto.specs.Cat",
                 Arrays.asList(new SpecificationItem("should get food from CatFoodStore"))));
     assertEquals(
-        classSpecifications, specificationParser.parseSpecifications(getContentFromResourceFile()));
+            unitSpecifications, specificationParser.parseSpecifications(getContentFromResourceFile()));
   }
 
   @Test

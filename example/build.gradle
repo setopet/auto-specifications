@@ -12,13 +12,14 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    annotationProcessor(project(":annotation-processor"))
+    testAnnotationProcessor(project(":annotation-processor"))
+    testImplementation(project(":api"))
 }
 
 test {
     useJUnitPlatform()
 }
 
-tasks.named("compileJava") {
-    options.sourcepath = sourceSets.main.resources.getSourceDirectories()
+tasks.named("compileTestJava") {
+    options.sourcepath = sourceSets.test.resources.getSourceDirectories()
 }

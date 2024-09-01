@@ -1,4 +1,4 @@
-package org.phosphantic.auto.specs;
+package org.phosphantic.auto.specs.parser;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.phosphantic.auto.specs.model.ClassSpecification;
+import org.phosphantic.auto.specs.model.UnitSpecification;
 import org.phosphantic.auto.specs.model.SpecificationItem;
 
 public class SpecificationParser {
@@ -19,7 +19,7 @@ public class SpecificationParser {
     this.objectMapper = objectMapper;
   }
 
-  public List<ClassSpecification> parseSpecifications(final String content) {
+  public List<UnitSpecification> parseSpecifications(final String content) {
     if( Strings.isNullOrEmpty(content)){
       return ImmutableList.of();
     }
@@ -34,7 +34,7 @@ public class SpecificationParser {
     return specificationMap.entrySet().stream()
         .map(
             entry ->
-                new ClassSpecification(
+                new UnitSpecification(
                     entry.getKey(),
                     entry.getValue().stream().map(SpecificationItem::new).collect(Collectors.toList())))
         .collect(Collectors.toList());

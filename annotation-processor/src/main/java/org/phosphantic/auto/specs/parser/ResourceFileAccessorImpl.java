@@ -1,4 +1,4 @@
-package org.phosphantic.auto.specs;
+package org.phosphantic.auto.specs.parser;
 
 import java.io.IOException;
 import java.io.InputStream;

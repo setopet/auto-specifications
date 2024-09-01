@@ -2,11 +2,13 @@ package org.phosphantic.auto.specs;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.phosphantic.auto.specs.parser.ResourceFileAccessor;
+import org.phosphantic.auto.specs.parser.SpecificationFileContentLoader;
+import org.phosphantic.auto.specs.parser.SpecificationFileInaccessibleException;
 
 public class SpecificationItemFileContentLoaderTest {
 

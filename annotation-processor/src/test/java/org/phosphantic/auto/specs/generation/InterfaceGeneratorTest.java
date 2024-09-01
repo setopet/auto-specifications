@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
-import org.phosphantic.auto.specs.model.ClassSpecification;
 import org.phosphantic.auto.specs.model.SpecificationItem;
+import org.phosphantic.auto.specs.model.UnitSpecification;
 
 public class InterfaceGeneratorTest {
 
@@ -14,7 +14,7 @@ public class InterfaceGeneratorTest {
     final String generatedInterface =
         new InterfaceGenerator()
             .generateInterface(
-                new ClassSpecification(
+                new UnitSpecification(
                     "org.phosphantic.Example",
                     ImmutableList.of(
                         new SpecificationItem("should do thing X"),

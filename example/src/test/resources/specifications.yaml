@@ -1,0 +1,9 @@
+org.phosphantic.auto.specs.Hello:
+  - should say hello
+  - should not say bye
+
+org.phosphantic.auto.specs.DateTimeFormatter:
+  - should format date
+
+org.phosphantic.auto.specs.FileUploader:
+  - should upload files to specified URL

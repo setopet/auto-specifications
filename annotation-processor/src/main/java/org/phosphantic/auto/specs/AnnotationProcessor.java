@@ -6,15 +6,24 @@ import com.google.auto.service.AutoService;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
+import java.util.stream.Collectors;
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
+import org.phosphantic.auto.specs.coverage.MethodInspector;
+import org.phosphantic.auto.specs.coverage.SpecificationCoverage;
+import org.phosphantic.auto.specs.coverage.SpecificationCoverageAnalyzer;
 import org.phosphantic.auto.specs.generation.InterfaceGenerator;
-import org.phosphantic.auto.specs.model.ClassSpecification;
+import org.phosphantic.auto.specs.model.UnitSpecification;
+import org.phosphantic.auto.specs.parser.ResourceFileAccessor;
+import org.phosphantic.auto.specs.parser.ResourceFileAccessorImpl;
+import org.phosphantic.auto.specs.parser.SpecificationFileContentLoader;
+import org.phosphantic.auto.specs.parser.SpecificationParser;
 
-@SupportedAnnotationTypes("*") // Make the processor run independently of present annotations
+@SupportedAnnotationTypes("*") // Make the processor always run
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @AutoService(Processor.class)
 public class AnnotationProcessor extends AbstractProcessor {
@@ -22,44 +31,78 @@ public class AnnotationProcessor extends AbstractProcessor {
   private static final String specificationFileName = "specifications.yaml";
   private final ObjectMapper objectMapper = new YAMLMapper();
   private final InterfaceGenerator interfaceGenerator = new InterfaceGenerator();
-  // FIXME: Better way to avoid multiple executions?
-  private boolean finished = false;
+  private final MethodInspector methodInspector = new MethodInspector();
+  private List<UnitSpecification> specifications;
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-    if (finished) {
+    if (specifications == null) {
+      processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "Processing specifications");
+      specifications = generateSpecifications(processingEnv);
+      try {
+        generateInterfaceSourceFile(specifications);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+    final Set<? extends Element> elements =
+        roundEnv.getElementsAnnotatedWith(VerifiesContract.class);
+    if (elements.isEmpty()) {
       return false;
     }
-    processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "Processing");
-    final List<ClassSpecification> specifications = getClassSpecifications(processingEnv);
-    try {
-      generateInterfaceSourceFile(specifications);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-    finished = true;
+    final Map<Element, List<UnitSpecification>> elementsToSpecificationsMap =
+        elements.stream()
+            .collect(Collectors.toMap(element -> element, this::getSpecificationForElement));
+    final SpecificationCoverage specificationCoverage =
+        new SpecificationCoverageAnalyzer(methodInspector)
+            .determineCoverage(specifications, elementsToSpecificationsMap);
+    processingEnv
+        .getMessager()
+        .printMessage(
+            Diagnostic.Kind.NOTE,
+            "Matched specifications: " + specificationCoverage.getMatchedSpecifications());
+    processingEnv
+        .getMessager()
+        .printMessage(
+            Diagnostic.Kind.NOTE,
+            "Unmatched specifications: " + specificationCoverage.getUnmatchedSpecifications());
+    processingEnv
+        .getMessager()
+        .printMessage(
+            Diagnostic.Kind.NOTE,
+            "Partial specifications: " + specificationCoverage.getPartiallyMatchedSpecifications());
     return false;
   }
 
-  private List<ClassSpecification> getClassSpecifications(
-      ProcessingEnvironment processingEnvironment) {
+  private List<UnitSpecification> getSpecificationForElement(final Element element) {
+    final List<String> contracts =
+        Arrays.asList(element.getAnnotation(VerifiesContract.class).value());
+    return specifications.stream()
+        .filter(
+            specification ->
+                contracts.stream()
+                    .anyMatch(
+                        specClass -> specClass.equals(specification.getSpecClassSimpleName())))
+        .collect(Collectors.toList());
+  }
+
+  private List<UnitSpecification> generateSpecifications(
+      final ProcessingEnvironment processingEnvironment) {
     final ResourceFileAccessor resourceFileAccessor =
         new ResourceFileAccessorImpl(processingEnvironment);
     final SpecificationFileContentLoader contentLoader =
         new SpecificationFileContentLoader(resourceFileAccessor, specificationFileName);
     final SpecificationParser specificationParser = new SpecificationParser(objectMapper);
-    final List<ClassSpecification> specifications =
-        specificationParser.parseSpecifications(contentLoader.getSpecificationFileContent());
-    return specifications;
+    return specificationParser.parseSpecifications(contentLoader.getSpecificationFileContent());
   }
 
-  private void generateInterfaceSourceFile(final List<ClassSpecification> classSpecifications)
+  private void generateInterfaceSourceFile(final List<UnitSpecification> unitSpecifications)
       throws IOException {
-    for (final ClassSpecification classSpecification : classSpecifications) {
+    for (final UnitSpecification unitSpecification : unitSpecifications) {
       JavaFileObject builderFile =
-          processingEnv.getFiler().createSourceFile(classSpecification.getSpecClassSimpleName());
+          processingEnv.getFiler().createSourceFile(unitSpecification.getSpecClassSimpleName());
       try (final Writer writer = builderFile.openWriter()) {
-        writer.write(interfaceGenerator.generateInterface(classSpecification));
+        writer.write(interfaceGenerator.generateInterface(unitSpecification));
       }
     }
   }

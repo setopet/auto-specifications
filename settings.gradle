@@ -1,4 +1,5 @@
 rootProject.name = "auto-specifications"
 
 include("annotation-processor")
+include("api")
 include("example")

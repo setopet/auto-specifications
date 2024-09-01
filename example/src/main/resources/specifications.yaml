@@ -1,5 +1,0 @@
-org.phosphantic.auto.specs.Hello:
-  - should say hello
-
-org.phosphantic.auto.specs.TimeUtils:
-  - should get current date

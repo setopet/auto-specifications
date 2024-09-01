@@ -2,6 +2,7 @@ package org.phosphantic.auto.specs;
 
 import java.io.IOException;
 import java.io.InputStream;
+import org.phosphantic.auto.specs.parser.ResourceFileAccessor;
 
 public class TestResourceFileAccessor implements ResourceFileAccessor {
   @Override
