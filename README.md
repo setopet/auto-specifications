@@ -1,8 +1,8 @@
 # Java Auto Specifications
 
-Generate Java interfaces for specifications written to a YAML file. Use those interfaces for test classes to track their coverage.
+Write specifications of system units to a YAML file. Use the annotation processor to ensure coverage of those specifications by test cases.
 
-The intention of this project is to encourage a lightweight design-driven approach for writing programmer's test, as you and your team are working with a non-Java source files when specifiying the functionality of a system unit.
+The intention of this project is to encourage a lightweight behaviour-driven approach (BDD) for writing code and programmer's test, as you and your team can define functionality of a system unit before focusing on implementation details.
 
 ## Getting Started
 
@@ -21,28 +21,9 @@ org.phosphantic.exampel.PetSupplyStore:
   - should throw PetSupplyStoreEmptyException when empty
 ```
 
-The annotation processor will then generate the following interfaces:
-```java
-public interface CatSpec {
-
-  void shouldAttractAttentionWhenHungry();
-
-  void shouldMakeABeautifulNoiseWhenSatisfied();
-}
-
-public interface PetSupplyStoreSpec {
-
-  void shouldSellAppropriateFood();
-
-  void shouldBeOpenOnWorkingDays();
-}
-```
-
- `@VerifiesContract` can then be used to ensure coverage:
+Use `@VerifiesContract` to track coverage:
 
 ```java
-import java.time.LocalDateTime;
-
 @VerifiesContract("PetSupplyStoreSpec")
 public class PetSupplyStoreTest {
 
