@@ -18,7 +18,7 @@ org.phosphantic.example.Cat:
 
 org.phosphantic.exampel.PetSupplyStore:
   - should sell appropriate food
-  - should throw PetSupplyStoreEmptyException when empty
+  - should be open on working days
 ```
 
 Use `@VerifiesContract` to track coverage:
