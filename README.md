@@ -34,12 +34,31 @@ public interface PetSupplyStoreSpec {
 
   void shouldSellAppropriateFood();
 
-  void shouldThrowPetSupplyEmptyExceptionWhenEmpty();
+  void shouldBeOpenOnWorkingDays();
 }
 ```
 
-Those interfaces can then be implemented by a test class to ensure coverage:
+ `@VerifiesContract` can then be used to ensure coverage:
 
 ```java
-public class PetSupplyStoreTest implements PetSupplyStoreSpec {
+import java.time.LocalDateTime;
+
+@VerifiesContract("PetSupplyStoreSpec")
+public class PetSupplyStoreTest {
+
+    @Test
+    public void shouldSellAppropriateFood() {
+        final PetSupplyStore petSupplyStore = new PetSupplyStore();
+        final Cat myCat = new Cat();
+        assertTrue(petSupplyStore.getFoodFor(myCat).isAppropriateFor(DietaryType.CARNIVOROUS));
+    }
+
+    @Test
+    public void shouldBeOpenOnWorkingDays() {
+        final PetSupplyStore petSupplyStore = new PetSupplyStore();
+        final LocalDateTime dateTime =  LocalDateTime.of(LocalDate.of(2024, 9, 4), LocalTime.of(10, 0));
+        assertTrue(petSupplyStore.isOpenOn(dateTime));
+    }
+
+}
 ```
