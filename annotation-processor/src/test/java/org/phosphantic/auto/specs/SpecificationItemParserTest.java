@@ -56,8 +56,8 @@ public class SpecificationItemParserTest {
   private String getContentFromResourceFile() {
     try {
       return new String(
-          new TestResourceFileAccessor()
-              .getResourceFileStream("example-specifications.yaml")
+          new TestSpecificationFileAccessor()
+              .getSpecificationFileAsStream("example-specifications.yaml")
               .readAllBytes());
     } catch (IOException e) {
       throw new RuntimeException(e);

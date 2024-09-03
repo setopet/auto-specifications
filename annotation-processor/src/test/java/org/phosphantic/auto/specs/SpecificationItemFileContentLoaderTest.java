@@ -6,18 +6,18 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.phosphantic.auto.specs.parser.ResourceFileAccessor;
+import org.phosphantic.auto.specs.parser.SpecificationFileAccessor;
 import org.phosphantic.auto.specs.parser.SpecificationFileContentLoader;
 import org.phosphantic.auto.specs.parser.SpecificationFileInaccessibleException;
 
 public class SpecificationItemFileContentLoaderTest {
 
-  @Mock private ResourceFileAccessor resourceFileAccessor = new TestResourceFileAccessor();
+  @Mock private SpecificationFileAccessor specificationFileAccessor = new TestSpecificationFileAccessor();
 
   @Test
   public void shouldGetSpecificationFileContent() {
     final SpecificationFileContentLoader specificationFileContentLoader =
-        new SpecificationFileContentLoader(resourceFileAccessor, "example-specifications.yaml");
+        new SpecificationFileContentLoader(specificationFileAccessor, "example-specifications.yaml");
     assertEquals(
         "org.phosphantic.auto.specs.CatFoodStore:\n"
             + "  - should only serve customers if not empty\n"
@@ -32,7 +32,7 @@ public class SpecificationItemFileContentLoaderTest {
   public void shouldThrowOnMissingSpecificationFile() throws IOException {
     final String notExistingSpecificationFile = "not-existing-specification-file.yaml";
     final SpecificationFileContentLoader specificationFileContentLoader =
-        new SpecificationFileContentLoader(resourceFileAccessor, notExistingSpecificationFile);
+        new SpecificationFileContentLoader(specificationFileAccessor, notExistingSpecificationFile);
     assertThrows(
         SpecificationFileInaccessibleException.class,
         specificationFileContentLoader::getSpecificationFileContent);

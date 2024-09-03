@@ -5,18 +5,18 @@ import java.io.InputStream;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.StandardLocation;
 
-public class ResourceFileAccessorImpl implements ResourceFileAccessor{
+public class ResourceSpecificationFileAccessor implements SpecificationFileAccessor {
 
   private final ProcessingEnvironment processingEnvironment;
 
-  public ResourceFileAccessorImpl(final ProcessingEnvironment processingEnvironment) {
+  public ResourceSpecificationFileAccessor(final ProcessingEnvironment processingEnvironment) {
     this.processingEnvironment = processingEnvironment;
   }
 
-  public InputStream getResourceFileStream(String filename) throws IOException {
+  public InputStream getSpecificationFileAsStream(String path) throws IOException {
     return processingEnvironment
         .getFiler()
-        .getResource(StandardLocation.SOURCE_PATH, "", filename)
+        .getResource(StandardLocation.SOURCE_PATH, "", path)
         .openInputStream();
   }
 }

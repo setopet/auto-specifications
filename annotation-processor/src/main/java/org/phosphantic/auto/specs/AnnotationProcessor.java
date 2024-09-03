@@ -18,8 +18,8 @@ import org.phosphantic.auto.specs.coverage.SpecificationCoverage;
 import org.phosphantic.auto.specs.coverage.SpecificationCoverageAnalyzer;
 import org.phosphantic.auto.specs.generation.InterfaceGenerator;
 import org.phosphantic.auto.specs.model.UnitSpecification;
-import org.phosphantic.auto.specs.parser.ResourceFileAccessor;
-import org.phosphantic.auto.specs.parser.ResourceFileAccessorImpl;
+import org.phosphantic.auto.specs.parser.SpecificationFileAccessor;
+import org.phosphantic.auto.specs.parser.ResourceSpecificationFileAccessor;
 import org.phosphantic.auto.specs.parser.SpecificationFileContentLoader;
 import org.phosphantic.auto.specs.parser.SpecificationParser;
 
@@ -88,10 +88,10 @@ public class AnnotationProcessor extends AbstractProcessor {
 
   private List<UnitSpecification> generateSpecifications(
       final ProcessingEnvironment processingEnvironment) {
-    final ResourceFileAccessor resourceFileAccessor =
-        new ResourceFileAccessorImpl(processingEnvironment);
+    final SpecificationFileAccessor specificationFileAccessor =
+        new ResourceSpecificationFileAccessor(processingEnvironment);
     final SpecificationFileContentLoader contentLoader =
-        new SpecificationFileContentLoader(resourceFileAccessor, specificationFileName);
+        new SpecificationFileContentLoader(specificationFileAccessor, specificationFileName);
     final SpecificationParser specificationParser = new SpecificationParser(objectMapper);
     return specificationParser.parseSpecifications(contentLoader.getSpecificationFileContent());
   }

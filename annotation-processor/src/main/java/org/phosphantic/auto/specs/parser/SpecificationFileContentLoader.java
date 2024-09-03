@@ -5,18 +5,18 @@ import java.io.InputStream;
 
 public class SpecificationFileContentLoader {
 
-  private final ResourceFileAccessor resourceFileAccessor;
+  private final SpecificationFileAccessor specificationFileAccessor;
   private final String specificationFileName;
 
   public SpecificationFileContentLoader(
-      ResourceFileAccessor resourceFileAccessor, final String specificationFileName) {
-    this.resourceFileAccessor = resourceFileAccessor;
+          SpecificationFileAccessor specificationFileAccessor, final String specificationFileName) {
+    this.specificationFileAccessor = specificationFileAccessor;
     this.specificationFileName = specificationFileName;
   }
 
   public String getSpecificationFileContent() {
     try (final InputStream inputStream =
-        resourceFileAccessor.getResourceFileStream(specificationFileName)) {
+        specificationFileAccessor.getSpecificationFileAsStream(specificationFileName)) {
       return new String(inputStream.readAllBytes());
     } catch (final IOException e) {
       throw new SpecificationFileInaccessibleException(specificationFileName, e);
