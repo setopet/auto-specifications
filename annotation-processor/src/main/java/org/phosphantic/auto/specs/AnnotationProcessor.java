@@ -13,13 +13,15 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
+
+import org.phosphantic.auto.specs.coverage.ContractInspector;
 import org.phosphantic.auto.specs.coverage.MethodInspector;
 import org.phosphantic.auto.specs.coverage.SpecificationCoverage;
 import org.phosphantic.auto.specs.coverage.SpecificationCoverageAnalyzer;
 import org.phosphantic.auto.specs.generation.InterfaceGenerator;
 import org.phosphantic.auto.specs.model.UnitSpecification;
-import org.phosphantic.auto.specs.parser.SpecificationFileAccessor;
 import org.phosphantic.auto.specs.parser.ResourceSpecificationFileAccessor;
+import org.phosphantic.auto.specs.parser.SpecificationFileAccessor;
 import org.phosphantic.auto.specs.parser.SpecificationFileContentLoader;
 import org.phosphantic.auto.specs.parser.SpecificationParser;
 
@@ -50,9 +52,10 @@ public class AnnotationProcessor extends AbstractProcessor {
     if (elements.isEmpty()) {
       return false;
     }
+    final ContractInspector contractInspector = new ContractInspector(specifications);
     final Map<Element, List<UnitSpecification>> elementsToSpecificationsMap =
         elements.stream()
-            .collect(Collectors.toMap(element -> element, this::getSpecificationForElement));
+            .collect(Collectors.toMap(element -> element, contractInspector::getSpecificationForElement));
     final SpecificationCoverage specificationCoverage =
         new SpecificationCoverageAnalyzer(methodInspector)
             .determineCoverage(specifications, elementsToSpecificationsMap);
@@ -72,18 +75,6 @@ public class AnnotationProcessor extends AbstractProcessor {
             Diagnostic.Kind.NOTE,
             "Partial specifications: " + specificationCoverage.getPartiallyMatchedSpecifications());
     return false;
-  }
-
-  private List<UnitSpecification> getSpecificationForElement(final Element element) {
-    final List<String> contracts =
-        Arrays.asList(element.getAnnotation(VerifiesContract.class).value());
-    return specifications.stream()
-        .filter(
-            specification ->
-                contracts.stream()
-                    .anyMatch(
-                        specClass -> specClass.equals(specification.getSpecClassSimpleName())))
-        .collect(Collectors.toList());
   }
 
   private List<UnitSpecification> generateSpecifications(

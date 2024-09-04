@@ -1,7 +1,7 @@
 import org.phosphantic.auto.specs.VerifiesContract;
 
-@VerifiesContract("DateTimeFormatterSpec")
-public class DateTimeFormatter {
+@VerifiesContract("DateTimeFormatter")
+public class DateTimeFormatterTest {
 
     public void shouldFormatDate() {
 

@@ -24,7 +24,7 @@ org.phosphantic.exampel.PetSupplyStore:
 Use `@VerifiesContract` to track coverage:
 
 ```java
-@VerifiesContract("PetSupplyStoreSpec")
+@VerifiesContract
 public class PetSupplyStoreTest {
 
     @Test

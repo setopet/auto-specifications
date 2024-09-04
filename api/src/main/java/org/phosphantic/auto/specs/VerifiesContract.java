@@ -2,6 +2,6 @@ package org.phosphantic.auto.specs;
 
 public @interface VerifiesContract {
 
-    String[] value();
+    String[] value() default {};
 
 }

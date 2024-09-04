@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.phosphantic.auto.specs.Hello;
 import org.phosphantic.auto.specs.VerifiesContract;
 
-@VerifiesContract("HelloSpec")
+// TODO: adapt examples to documentation
+@VerifiesContract
 public class HelloTest {
 
   @Test
