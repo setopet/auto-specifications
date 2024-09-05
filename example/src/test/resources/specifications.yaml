@@ -1,9 +1,10 @@
-org.phosphantic.auto.specs.Hello:
-  - should say hello
-  - should not say bye
+org.phosphantic.example.Cat:
+  - should meow when hungry
+  - should purr when satisfied
 
-org.phosphantic.auto.specs.DateTimeFormatter:
-  - should format date
+org.phosphantic.example.PetSupplyStore:
+  - should sell appropriate food
+  - should be open on working days
 
-org.phosphantic.auto.specs.FileUploader:
-  - should upload files to specified URL
+org.phosphantic.example.Bathroom:
+  - should induce a clean cat state
