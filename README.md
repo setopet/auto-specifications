@@ -50,4 +50,24 @@ public class PetSupplyStoreTest {
         assertTrue(petSupplyStore.isOpenOn(someWorkingDay));
     }
 }
+
+@VerifiesContract
+public class CatTest {
+    @Test
+    public void shouldMeowWhenHungry() {
+        final Cat cat = Cat.newBuilder().withHungry(true).build();
+        assertEquals("Meow!", cat.noise());
+    }
+}
+```
+
+The annotation processor will then generate the following output when compiling the test source set:
+
+```
+  1 verified specification
+  1 unverified specification
+    org.phosphantic.example.Bathroom
+  1 partially unverified specification
+    org.phosphantic.example.Cat
+      - should purr when satisfied
 ```

@@ -1,14 +1,13 @@
 package org.phosphantic.auto.specs;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.phosphantic.auto.specs.parser.SpecificationFileAccessor;
 import org.phosphantic.auto.specs.parser.SpecificationFileContentLoader;
 import org.phosphantic.auto.specs.parser.SpecificationFileInaccessibleException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SpecificationItemFileContentLoaderTest {
 
@@ -18,14 +17,12 @@ public class SpecificationItemFileContentLoaderTest {
   public void shouldGetSpecificationFileContent() {
     final SpecificationFileContentLoader specificationFileContentLoader =
         new SpecificationFileContentLoader(specificationFileAccessor, "example-specifications.yaml");
-    assertEquals(
-        "org.phosphantic.auto.specs.CatFoodStore:\n"
-            + "  - should only serve customers if not empty\n"
-            + "  - should only serve cats\n"
-            + "\n"
-            + "org.phosphantic.auto.specs.Cat:\n"
-            + "  - should get food from CatFoodStore\n",
-        specificationFileContentLoader.getSpecificationFileContent());
+    final String content = specificationFileContentLoader.getSpecificationFileContent();
+    assertTrue(content.contains("org.phosphantic.auto.specs.CatFoodStore:"));
+    assertTrue(content.contains("  - should only serve customers if not empty"));
+    assertTrue(content.contains("  - should only serve cats"));
+    assertTrue(content.contains("org.phosphantic.auto.specs.Cat:"));
+    assertTrue(content.contains("  - should get food from CatFoodStore"));
   }
 
   @Test

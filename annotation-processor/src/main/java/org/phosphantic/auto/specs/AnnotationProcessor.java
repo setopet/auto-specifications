@@ -11,13 +11,9 @@ import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
-import org.phosphantic.auto.specs.coverage.ContractInspector;
-import org.phosphantic.auto.specs.coverage.MethodInspector;
-import org.phosphantic.auto.specs.coverage.SpecificationCoverage;
-import org.phosphantic.auto.specs.coverage.SpecificationCoverageAnalyzer;
+import org.phosphantic.auto.specs.coverage.*;
 import org.phosphantic.auto.specs.generation.InterfaceGenerator;
 import org.phosphantic.auto.specs.model.UnitSpecification;
 import org.phosphantic.auto.specs.parser.ResourceSpecificationFileAccessor;
@@ -39,7 +35,6 @@ public class AnnotationProcessor extends AbstractProcessor {
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
     if (specifications == null) {
-      processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "Processing specifications");
       specifications = generateSpecifications(processingEnv);
       try {
         generateInterfaceSourceFile(specifications);
@@ -59,21 +54,8 @@ public class AnnotationProcessor extends AbstractProcessor {
     final SpecificationCoverage specificationCoverage =
         new SpecificationCoverageAnalyzer(methodInspector)
             .determineCoverage(specifications, elementsToSpecificationsMap);
-    processingEnv
-        .getMessager()
-        .printMessage(
-            Diagnostic.Kind.NOTE,
-            "Matched specifications: " + specificationCoverage.getMatchedSpecifications());
-    processingEnv
-        .getMessager()
-        .printMessage(
-            Diagnostic.Kind.NOTE,
-            "Unmatched specifications: " + specificationCoverage.getUnmatchedSpecifications());
-    processingEnv
-        .getMessager()
-        .printMessage(
-            Diagnostic.Kind.NOTE,
-            "Partial specifications: " + specificationCoverage.getPartiallyMatchedSpecifications());
+    final Notifier notifier = new Notifier(processingEnv.getMessager());
+    notifier.writeNote(new SpecificationCoverageOutput(specificationCoverage).asString());
     return false;
   }
 
@@ -90,9 +72,9 @@ public class AnnotationProcessor extends AbstractProcessor {
   private void generateInterfaceSourceFile(final List<UnitSpecification> unitSpecifications)
       throws IOException {
     for (final UnitSpecification unitSpecification : unitSpecifications) {
-      JavaFileObject builderFile =
+      JavaFileObject javaFileObject =
           processingEnv.getFiler().createSourceFile(unitSpecification.getSpecClassSimpleName());
-      try (final Writer writer = builderFile.openWriter()) {
+      try (final Writer writer = javaFileObject.openWriter()) {
         writer.write(interfaceGenerator.generateInterface(unitSpecification));
       }
     }
