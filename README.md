@@ -33,32 +33,33 @@ org.phosphantic.example.Bathroom:
 Use `@VerifiesContract` to track coverage:
 
 ```java
-
 @VerifiesContract
 public class PetSupplyStoreTest {
 
-    @Test
-    public void shouldSellAppropriateFood() {
-        final PetSupplyStore petSupplyStore = new PetSupplyStore();
-        assertTrue(petSupplyStore.getCatFood().isAppropriateFor(DietaryType.CARNIVOROUS));
-    }
+  @Test
+  public void shouldSellAppropriateFood() {
+    final PetSupplyStore petSupplyStore = new PetSupplyStore();
+    assertTrue(petSupplyStore.getCatFood().isAppropriateFor(DietaryType.CARNIVOROUS));
+  }
 
-    @Test
-    public void shouldBeOpenOnWorkingDays() {
-        final PetSupplyStore petSupplyStore = new PetSupplyStore();
-        final LocalDate someWorkingDay = LocalDate.of(2024, 9, 4);
-        assertTrue(petSupplyStore.isOpenOn(someWorkingDay));
-    }
+  @Test
+  public void shouldBeOpenOnWorkingDays() {
+    final PetSupplyStore petSupplyStore = new PetSupplyStore();
+    final LocalDate someWorkingDay = LocalDate.of(2024, 9, 4);
+    assertTrue(petSupplyStore.isOpenOn(someWorkingDay));
+  }
 }
 
 @VerifiesContract
 public class CatTest {
-    @Test
-    public void shouldMeowWhenHungry() {
-        final Cat cat = Cat.newBuilder().withHungry(true).build();
-        assertEquals("Meow!", cat.noise());
-    }
+    
+  @Test
+  public void shouldMeowWhenHungry() {
+    final Cat cat = Cat.newBuilder().withHungry(true).build();
+    assertEquals("Meow!", cat.noise());
+  }
 }
+
 ```
 
 The annotation processor will then generate the following output when compiling the test source set:
