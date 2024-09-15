@@ -9,7 +9,7 @@ import org.phosphantic.auto.specs.parser.SpecificationFileInaccessibleException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SpecificationItemFileContentLoaderTest {
+public class SpecificationFileContentLoaderTest {
 
   @Mock private SpecificationFileAccessor specificationFileAccessor = new TestSpecificationFileAccessor();
 

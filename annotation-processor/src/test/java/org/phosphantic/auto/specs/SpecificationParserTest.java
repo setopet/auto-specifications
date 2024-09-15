@@ -15,7 +15,7 @@ import org.phosphantic.auto.specs.model.SpecificationItem;
 import org.phosphantic.auto.specs.model.UnitSpecification;
 import org.phosphantic.auto.specs.parser.SpecificationParser;
 
-public class SpecificationItemParserTest {
+public class SpecificationParserTest {
 
   @Test
   public void shouldParseEmptyInput() {
